@@ -27,7 +27,7 @@ class HomeScreenProvider with ChangeNotifier{
       isLoading = false;
       notifyListeners();
 
-      debugPrint('====== statusCode${response.statusCode}');
+      debugPrint('====== statusCode: ${response.statusCode}');
       if(response.statusCode!=200){
        return false;
       }
@@ -60,7 +60,7 @@ class HomeScreenProvider with ChangeNotifier{
       http.Response response =await http.get(Uri.parse(ApiUrls.profileDataUrl));
       isUserLoading = false;
       notifyListeners();
-      debugPrint('====== statusCode${response.statusCode}');
+      debugPrint('====== statusCode::${response.statusCode}');
       if(response.statusCode!=200){
         return false;
       }

@@ -17,9 +17,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
    provider = Provider.of<HomeScreenProvider>(context,listen: false);
-   WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-     await provider?.getImage();
-     await provider?.getUser();
+
+   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      provider?.getImage();
+      provider?.getUser();
    });
     super.initState();
   }
