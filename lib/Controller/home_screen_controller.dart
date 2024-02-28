@@ -3,7 +3,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:machine_task/constants/api_urls.dart';
 import 'package:machine_task/models/user_model.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+
 
 import '../models/image_model.dart';
 import 'package:http/http.dart'as http;
@@ -21,9 +22,7 @@ class HomeScreenProvider with ChangeNotifier{
       isLoading = true;
       imageData = null;
       notifyListeners();
-      debugPrint('-------------> loading started');
       http.Response response =await http.get(Uri.parse(ApiUrls.dogImageUrl));
-      debugPrint('-------------> loaded');
       isLoading = false;
       notifyListeners();
 
@@ -37,12 +36,10 @@ class HomeScreenProvider with ChangeNotifier{
     return false;
     } else{
         imageData = data;
-        debugPrint('====== Image: ${imageData?.message}');
         notifyListeners();
         return true;
       }
     }catch(e){
-      debugPrint('====== exception: ${e.toString()}');
       isLoading = false;
       notifyListeners();
       return false;
@@ -55,7 +52,6 @@ class HomeScreenProvider with ChangeNotifier{
 
       isUserLoading = true;
       userData = null;
-      imageData = null;
       notifyListeners();
       http.Response response =await http.get(Uri.parse(ApiUrls.profileDataUrl));
       isUserLoading = false;
@@ -74,9 +70,14 @@ class HomeScreenProvider with ChangeNotifier{
       }
     }catch(e){
       debugPrint('====== exception: ${e.toString()}');
+      notifyListeners();
       return false;
     }
 
+  }
+
+  enableBluetooth()async{
+     await FlutterBluePlus.turnOn();
   }
 
 

@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   HomeScreenProvider ? provider;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -24,13 +25,25 @@ class _HomeScreenState extends State<HomeScreen> {
    });
     super.initState();
   }
+
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _scaffoldKey,
 
       appBar: AppBar(
         title: const Text('Home Screen'),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon:const Icon( Icons.menu),
+          onPressed: ()async{
+
+             _scaffoldKey.currentState?.openDrawer();
+             await provider?.getUser();
+          },
+        ),
         backgroundColor: Colors.deepPurpleAccent,
       ),
       body: SafeArea(
@@ -56,14 +69,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
                   if(model.imageData!=null) {
-                    return Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                          child: Image.network(
-                            model.imageData!.message!,
-                            fit: BoxFit.contain,
-                          )),
+                    return Expanded(
+                      flex: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: ClipRRect(
+                          clipBehavior: Clip.hardEdge,
+                          borderRadius: BorderRadius.circular(5),
+                            child: Image.network(
+                              model.imageData!.message!,
+                              fit: BoxFit.fill,
+                            )
+                        ),
+                      ),
                     );
                   }
 
@@ -91,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ElevatedButton(
                       onPressed: ()async{
 
-
+                        await provider!.enableBluetooth();
                       },
                     child: const Text('Enable Bluetooth'),
                     )
@@ -108,6 +126,19 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: Drawer(
         child: Consumer<HomeScreenProvider>(
           builder: (context,model,_) {
+
+            if(model.isUserLoading) {
+              return const Align(
+                alignment: Alignment.center,
+                child:  SizedBox.square(
+                  dimension: 25,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                ),
+              );
+            }
+
             if(model.userData!=null) {
               var userData = model.userData!.results![0];
               return ListView(
@@ -168,10 +199,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             );
             }
-            return const SizedBox();
+
+            return const Align(
+              alignment: Alignment.center,
+              child:  Text('Something went wrong. Please try again'),
+            );
           }
         ),
       ),
     );
   }
+
+  openDrawer(){
+
+  }
+
 }
